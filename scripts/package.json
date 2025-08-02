@@ -1,0 +1,8 @@
+{
+  "name": "quiz-import-script",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "firebase": "^12.0.0"
+  }
+}

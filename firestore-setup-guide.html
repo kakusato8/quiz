@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Firestore API有効化ガイド</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .step-number {
+            background: #4CAF50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .url-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 10px 0;
+            word-break: break-all;
+            border: 2px solid rgba(76, 175, 80, 0.5);
+        }
+
+        .important-note {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid rgba(255, 193, 7, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .important-note h4 {
+            color: #FFC107;
+            margin-bottom: 10px;
+        }
+
+        .screenshot-placeholder {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 15px 0;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .button {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid rgba(76, 175, 80, 0.5);
+            border-radius: 8px;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background: rgba(76, 175, 80, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .command-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .troubleshooting {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid rgba(244, 67, 54, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .troubleshooting h4 {
+            color: #f44336;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🔥 Firestore API有効化ガイド</h1>
+        
+        <div class="important-note">
+            <h4>⚠️ 重要な前提条件</h4>
+            <p>プロジェクトID: <strong>quiz-e08fc</strong></p>
+            <p>このガイドは上記のFirebaseプロジェクト用です。</p>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Firebase Consoleにアクセス
+            </div>
+            <p>以下のURLから Firebase Console にアクセスしてください：</p>
+            <div class="url-box">
+                https://console.firebase.google.com/
+            </div>
+            <a href="https://console.firebase.google.com/" target="_blank" class="button">
+                🚀 Firebase Console を開く
+            </a>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                プロジェクトを選択
+            </div>
+            <p>Firebase Console で以下のプロジェクトを選択してください：</p>
+            <div class="url-box">
+                プロジェクト名: quiz-e08fc
+            </div>
+            <div class="screenshot-placeholder">
+                プロジェクト一覧から「quiz-e08fc」をクリック
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Firestore Databaseにアクセス
+            </div>
+            <p>左側のメニューから「Firestore Database」を選択します：</p>
+            <ul>
+                <li>左側ナビゲーションの「構築」セクションを開く</li>
+                <li>「Firestore Database」をクリック</li>
+            </ul>
+            <div class="screenshot-placeholder">
+                左メニュー → 構築 → Firestore Database
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                データベースの作成
+            </div>
+            <p>初回の場合は「データベースの作成」ボタンが表示されます：</p>
+            <ol>
+                <li>「データベースの作成」をクリック</li>
+                <li>セキュリティルールを選択：</li>
+                <ul>
+                    <li><strong>開発用：</strong>「テストモードで開始」を選択</li>
+                    <li><strong>本番用：</strong>「本番モードで開始」を選択</li>
+                </ul>
+                <li>ロケーションを選択（推奨：asia-northeast1 (東京)）</li>
+                <li>「完了」をクリック</li>
+            </ol>
+        </div>
+
+        <div class="important-note">
+            <h4>🔒 セキュリティルールについて</h4>
+            <p><strong>開発用（テストモード）:</strong></p>
+            <div class="command-box">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+            </div>
+            <p><strong>本番用（推奨）:</strong></p>
+            <div class="command-box">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /questions/{document} {
+      allow read: if true;
+      allow write: if false;  // 読み取り専用
+    }
+  }
+}
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">5</span>
+                APIキーとプロジェクト設定の確認
+            </div>
+            <p>Firestore作成後、以下の設定を確認してください：</p>
+            <ol>
+                <li>プロジェクト設定にアクセス（⚙️ アイコン）</li>
+                <li>「全般」タブでプロジェクトIDを確認</li>
+                <li>「ウェブアプリ」セクションでAPIキーを確認</li>
+            </ol>
+            <div class="important-note">
+                <h4>📋 現在の設定値</h4>
+                <p>firebase.ts ファイルに以下の設定が含まれています：</p>
+                <div class="command-box">
+const firebaseConfig = {
+  apiKey: "AIzaSyC8Q1YjQOqJ0RH7_Yr0gZjI8VGY4YjNcMg",
+  authDomain: "quiz-e08fc.firebaseapp.com",
+  projectId: "quiz-e08fc",
+  storageBucket: "quiz-e08fc.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">6</span>
+                完了確認
+            </div>
+            <p>Firestore Database が正常に作成されると：</p>
+            <ul>
+                <li>✅ Firestore Database ダッシュボードが表示される</li>
+                <li>✅ 「コレクション」作成ボタンが表示される</li>
+                <li>✅ データの読み書きが可能になる</li>
+            </ul>
+        </div>
+
+        <div class="troubleshooting">
+            <h4>🚨 トラブルシューティング</h4>
+            <p><strong>よくある問題と解決方法：</strong></p>
+            <ul>
+                <li><strong>プロジェクトが見つからない：</strong>
+                    <ul>
+                        <li>正しいGoogleアカウントでログインしているか確認</li>
+                        <li>プロジェクトの所有者・編集者権限があるか確認</li>
+                    </ul>
+                </li>
+                <li><strong>Firestore Databaseメニューが表示されない：</strong>
+                    <ul>
+                        <li>ブラウザを更新してみる</li>
+                        <li>Firebase プロジェクトの課金設定を確認</li>
+                    </ul>
+                </li>
+                <li><strong>データベース作成に失敗：</strong>
+                    <ul>
+                        <li>インターネット接続を確認</li>
+                        <li>別のブラウザで試してみる</li>
+                        <li>Firebase サポートに問い合わせ</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">7</span>
+                次のステップ
+            </div>
+            <p>Firestore API有効化完了後：</p>
+            <ol>
+                <li>Reactアプリケーションを起動：</li>
+                <div class="command-box">npm run dev</div>
+                <li>ブラウザで http://localhost:3000/ にアクセス</li>
+                <li>「データをインポート」でCSVデータをFirestoreに移行</li>
+                <li>クイズアプリケーションを楽しむ！</li>
+            </ol>
+        </div>
+
+        <div class="important-note">
+            <h4>💡 ヒント</h4>
+            <p>Firestore有効化後、以下のコマンドでアプリケーションの動作をテストできます：</p>
+            <div class="command-box">
+# 開発サーバー起動
+npm run dev
+
+# ビルドテスト  
+npm run build
+
+# プロダクションプレビュー
+npm run preview
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="firestore-quiz.html" class="button">📋 メインページに戻る</a>
+            <a href="http://localhost:3000/" target="_blank" class="button">🚀 Reactアプリを開く</a>
+        </div>
+    </div>
+</body>
+</html>

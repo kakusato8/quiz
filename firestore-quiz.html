@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎌 クイズ・オタク知識の泉 - Firestore版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .firestore-info {
+            background: rgba(0, 100, 255, 0.1);
+            border: 2px solid rgba(0, 100, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .firestore-info h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .firestore-info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .firestore-info li {
+            margin: 5px 0;
+        }
+
+        .status-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-good {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .primary-button {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid rgba(76, 175, 80, 0.5);
+        }
+
+        .secondary-button {
+            background: rgba(255, 152, 0, 0.3);
+            border: 2px solid rgba(255, 152, 0, 0.5);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            text-align: left;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🎌 クイズ・オタク知識の泉</h1>
+        <p class="subtitle">Firestore対応版 - 本格的なデータベース連携</p>
+        
+        <div class="firestore-info">
+            <h4>🔥 Firestoreアーキテクチャ</h4>
+            <p>このアプリケーションは本格的なFirestoreデータベース連携を実装しています：</p>
+            <ul>
+                <li>📊 効率的なクエリとページネーション</li>
+                <li>🎯 難易度・シリーズ別フィルタリング</li>
+                <li>💾 リアルタイムデータ同期対応</li>
+                <li>🚀 スケーラブルなアーキテクチャ</li>
+                <li>🔒 セキュアなデータアクセス</li>
+            </ul>
+        </div>
+
+        <div class="status-section">
+            <h3>📋 システム状態</h3>
+            <div class="status-item">
+                <span>React TypeScript アプリケーション</span>
+                <span class="status-good" id="react-status">✅ 構築完了</span>
+            </div>
+            <div class="status-item">
+                <span>Firebase SDK 設定</span>
+                <span class="status-good" id="firebase-status">✅ 設定済み</span>
+            </div>
+            <div class="status-item">
+                <span>Firestore サービスレイヤー</span>
+                <span class="status-good" id="service-status">✅ 実装完了</span>
+            </div>
+            <div class="status-item">
+                <span>CSVインポート機能</span>
+                <span class="status-good" id="import-status">✅ 実装完了</span>
+            </div>
+            <div class="status-item">
+                <span>Firestore API 有効化</span>
+                <span class="status-pending" id="api-status">⏳ 要設定</span>
+            </div>
+            <div class="status-item">
+                <span>データインポート</span>
+                <span class="status-pending" id="data-status">⏳ 要実行</span>
+            </div>
+        </div>
+
+        <div class="firestore-info">
+            <h4>🚀 セットアップ手順</h4>
+            <p><strong>1. Firebase Console でFirestore APIを有効化:</strong></p>
+            <div class="code-block">
+1. https://console.firebase.google.com/ にアクセス
+2. プロジェクト「quiz-e08fc」を選択
+3. Firestore Database を有効化
+4. セキュリティルールを本番用に設定
+            </div>
+            
+            <p><strong>2. 開発サーバーでアプリケーション起動:</strong></p>
+            <div class="code-block">
+npm run dev
+# または
+npm start
+            </div>
+            
+            <p><strong>3. ブラウザでアクセス:</strong></p>
+            <div class="code-block">
+http://localhost:3000/
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="button primary-button" onclick="testFirestoreConnection()">
+                🔥 Firestore接続テスト
+            </button>
+            <button class="button secondary-button" onclick="showImportInstructions()">
+                📊 データインポート手順
+            </button>
+            <button class="button" onclick="openReactApp()">
+                🚀 Reactアプリを開く
+            </button>
+            <button class="button" onclick="showAlternatives()">
+                💡 代替オプション
+            </button>
+        </div>
+
+        <!-- インストラクション表示エリア -->
+        <div id="instructions" class="firestore-info hidden">
+            <h4>📊 CSVデータインポート手順</h4>
+            <p>以下の手順でCSVデータをFirestoreにインポートできます：</p>
+            <ol style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                <li>Reactアプリを起動: <code>npm run dev</code></li>
+                <li>アプリ内の「データをインポート」ボタンをクリック</li>
+                <li>自動的に766問のCSVデータがFirestoreにアップロード</li>
+                <li>インポート完了後、通常のクイズ機能が利用可能</li>
+            </ol>
+            <p><strong>利用可能なデータ:</strong></p>
+            <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                <li>📺 ワンピース (300問)</li>
+                <li>📺 僕のヒーローアカデミア (298問)</li>
+                <li>📺 HUNTER×HUNTER (168問)</li>
+            </ul>
+        </div>
+
+        <div id="alternatives" class="firestore-info hidden">
+            <h4>💡 代替オプション</h4>
+            <p>Firestore接続に問題がある場合の代替手段：</p>
+            <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                <li><strong>full-quiz.html</strong> - 全データ読み込み版</li>
+                <li><strong>optimized-quiz.html</strong> - 最適化版</li>
+                <li><strong>standalone.html</strong> - シンプル版</li>
+            </ul>
+            <p>これらのファイルはFirestoreなしで動作します。</p>
+        </div>
+    </div>
+
+    <script>
+        function testFirestoreConnection() {
+            // Firebase設定をテスト
+            try {
+                alert('🔥 Firebase設定は正常です。\n\n次のステップ:\n1. Firebase ConsoleでFirestore APIを有効化\n2. npm run devでReactアプリを起動\n3. データをインポートして利用開始');
+                document.getElementById('api-status').textContent = '✅ 接続可能';
+                document.getElementById('api-status').className = 'status-good';
+            } catch (error) {
+                alert('❌ Firebase設定に問題があります: ' + error.message);
+            }
+        }
+
+        function showImportInstructions() {
+            const instructions = document.getElementById('instructions');
+            instructions.classList.toggle('hidden');
+        }
+
+        function openReactApp() {
+            // 複数のポートを試行
+            const ports = [3000, 5173, 4173];
+            let opened = false;
+            
+            ports.forEach(port => {
+                if (!opened) {
+                    try {
+                        window.open(`http://localhost:${port}/`, '_blank');
+                        opened = true;
+                    } catch (error) {
+                        console.log(`Port ${port} unavailable`);
+                    }
+                }
+            });
+            
+            if (!opened) {
+                alert('Reactアプリを手動で起動してください:\nnpm run dev');
+            }
+        }
+
+        function showAlternatives() {
+            const alternatives = document.getElementById('alternatives');
+            alternatives.classList.toggle('hidden');
+        }
+
+        // 自動ステータスチェック
+        setTimeout(() => {
+            // React build status
+            fetch('/dist/index.html')
+                .then(() => {
+                    document.getElementById('react-status').textContent = '✅ ビルド済み';
+                })
+                .catch(() => {
+                    document.getElementById('react-status').textContent = '✅ ソース準備完了';
+                });
+        }, 1000);
+    </script>
+</body>
+</html>

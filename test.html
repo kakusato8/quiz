@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎌 クイズ・オタク知識の泉</h1>
+        <p>テスト用の静的ページです</p>
+        
+        <div class="info">
+            <h3>📊 アプリケーション状況</h3>
+            <p>✅ サーバー起動中: http://localhost:5173/</p>
+            <p>✅ ビルド成功済み</p>
+            <p>✅ サンプルデータ準備完了</p>
+        </div>
+        
+        <div>
+            <button class="button" onclick="testReactApp()">
+                🚀 Reactアプリにアクセス
+            </button>
+            <button class="button" onclick="showData()">
+                📋 サンプルデータ表示
+            </button>
+        </div>
+        
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function testReactApp() {
+            // 新しいタブでReactアプリを開く
+            window.open('http://localhost:5173/', '_blank');
+        }
+        
+        function showData() {
+            const result = document.getElementById('result');
+            result.innerHTML = `
+                <div class="info">
+                    <h4>🎮 利用可能なクイズデータ</h4>
+                    <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                        <li>📺 ワンピース: 3問</li>
+                        <li>📺 僕のヒーローアカデミア: 3問</li>
+                        <li>📺 HUNTER×HUNTER: 3問</li>
+                    </ul>
+                    <p><strong>合計: 9問のサンプルクイズ</strong></p>
+                    <p>4段階の難易度とオタク度判定システム付き！</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

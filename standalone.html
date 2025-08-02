@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎌 クイズ・オタク知識の泉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .random-button {
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .random-button:hover {
+            background: rgba(255, 215, 0, 0.4);
+        }
+
+        .quiz-header {
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .question {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .choice {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .choice:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .choice.selected {
+            border: 2px solid rgba(255, 215, 0, 0.8);
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .result {
+            margin-bottom: 30px;
+        }
+
+        .emblem {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin: 0 auto 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- メニュー画面 -->
+        <div id="menu" class="screen">
+            <h1 class="title">🎌 クイズ・オタク知識の泉</h1>
+            <p class="subtitle">あなたのオタク度を測定しましょう！</p>
+            
+            <div class="stats">
+                <h3>📊 利用可能なデータ</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin: 15px 0;">
+                    <div>📺 ワンピース: 3問</div>
+                    <div>📺 僕のヒーローアカデミア: 3問</div>
+                    <div>📺 HUNTER×HUNTER: 3問</div>
+                </div>
+                <p><strong>合計: 9問</strong></p>
+            </div>
+
+            <div class="button-group">
+                <button class="button random-button" onclick="startQuiz('random')">
+                    🎲 ランダム出題
+                </button>
+                <button class="button" onclick="startQuiz('ワンピース')">
+                    📺 ワンピース
+                </button>
+                <button class="button" onclick="startQuiz('僕のヒーローアカデミア')">
+                    📺 僕のヒーローアカデミア
+                </button>
+                <button class="button" onclick="startQuiz('HUNTER×HUNTER')">
+                    📺 HUNTER×HUNTER
+                </button>
+            </div>
+        </div>
+
+        <!-- クイズ画面 -->
+        <div id="quiz" class="screen hidden">
+            <div class="quiz-header">
+                <h2 id="quiz-title">🎯 クイズ</h2>
+                <div class="progress" id="progress">問題 1 / 3</div>
+            </div>
+
+            <div class="question">
+                <h3 id="question-text">問題文がここに表示されます</h3>
+            </div>
+
+            <div class="choices" id="choices">
+                <!-- 選択肢がここに動的に追加されます -->
+            </div>
+
+            <div class="button-group">
+                <button class="button disabled" id="next-button" onclick="nextQuestion()">
+                    次の問題
+                </button>
+            </div>
+
+            <button class="back-button" onclick="showMenu()">
+                🏠 ホームに戻る
+            </button>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="results" class="screen hidden">
+            <h2>🎉 クイズ結果</h2>
+            
+            <div class="result">
+                <div class="emblem" id="emblem">🏆</div>
+                <h3 id="level-title">結果</h3>
+                <p id="level-description">説明</p>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span>正解率:</span>
+                    <span id="accuracy">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span>正解数:</span>
+                    <span id="score">0/0</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="button" onclick="showMenu()">
+                    🔄 もう一度挑戦
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // サンプルクイズデータ
+        const quizData = {
+            'ワンピース': [
+                {
+                    id: '1',
+                    text: 'ルフィが麦わら帽子をシャンクスから預かったのは何歳の時？',
+                    choices: ['5歳', '7歳', '9歳', '11歳'],
+                    correct: 1,
+                    explanation: 'ルフィがシャンクスに麦わら帽子を預けられたのは7歳の時です。'
+                },
+                {
+                    id: '2', 
+                    text: 'ゾロがミホークと戦った場所は？',
+                    choices: ['バラティエ', 'フーシャ村', 'シロップ村', 'ココヤシ村'],
+                    correct: 0,
+                    explanation: 'ゾロはミホークと海上レストラン・バラティエで戦いました。'
+                },
+                {
+                    id: '3',
+                    text: 'ナミがベルメールさんのために隠していた財産はいくら？',
+                    choices: ['1億ベリー', '5000万ベリー', '3000万ベリー', '1億ベリー以上'],
+                    correct: 0,
+                    explanation: 'ナミがベルメールさんのために隠していた財産は1億ベリーでした。'
+                }
+            ],
+            '僕のヒーローアカデミア': [
+                {
+                    id: '4',
+                    text: '主人公緑谷出久の個性は？',
+                    choices: ['ワン・フォー・オール', 'オール・フォー・ワン', '爆破', '無個性'],
+                    correct: 0,
+                    explanation: 'ワン・フォー・オールは代々受け継がれてきた個性です。'
+                },
+                {
+                    id: '5',
+                    text: '爆豪勝己の個性は？',
+                    choices: ['爆破', '半冷半燃', '無重力', '硬化'],
+                    correct: 0,
+                    explanation: '爆豪勝己は掌から爆破を起こすことができます。'
+                },
+                {
+                    id: '6',
+                    text: '麗日お茶子の個性は？',
+                    choices: ['無重力', '創造', '電気', '高速'],
+                    correct: 0,
+                    explanation: '麗日お茶子は触れたものを無重力にすることができます。'
+                }
+            ],
+            'HUNTER×HUNTER': [
+                {
+                    id: '7',
+                    text: 'ゴンが初めてキルアと出会ったハンター試験の場所はどこ？',
+                    choices: ['ゾルディック家', 'ビスケの森', 'シークレットサイト', 'ブランクス山'],
+                    correct: 2,
+                    explanation: 'ハンター試験の第一次試験中に、ゴンはブランクス山でキルアと出会いました。'
+                },
+                {
+                    id: '8',
+                    text: 'ハンター試験の第一次試験で出された課題は？',
+                    choices: ['グルメハンターとしての料理', '森の動物を捕獲する', '目的地までたどり着く', '迷路を突破する'],
+                    correct: 0,
+                    explanation: '第一次試験は、サトツの「グルメハンターとしての料理」でした。'
+                },
+                {
+                    id: '9',
+                    text: 'ハンター試験の第二次試験で、メンチが出した課題は？',
+                    choices: ['寿司を作る', '巨大な豚を捕まえる', '卵料理を作る', '薬草を探す'],
+                    correct: 2,
+                    explanation: '第二次試験は、メンチによる「卵料理を作る」という課題でした。'
+                }
+            ]
+        };
+
+        // オタク度判定データ
+        const otakuLevels = [
+            { threshold: 95, level: 'god', title: '神', description: '完璧すぎる...もはや人間を超越している', color: '#FFD700', emblem: '👑' },
+            { threshold: 80, level: 'legend', title: '生ける伝説', description: 'アニメ・漫画界の生き字引', color: '#FF6B35', emblem: '⚡' },
+            { threshold: 60, level: 'veteran', title: '古参兵', description: '長年培った知識が光る立派な古参オタク', color: '#8A2BE2', emblem: '🛡️' },
+            { threshold: 40, level: 'otaku', title: 'オタクの卵', description: 'オタクの片鱗を見せています', color: '#4169E1', emblem: '🥚' },
+            { threshold: 20, level: 'general', title: '一般人', description: '一般的な知識レベル', color: '#32CD32', emblem: '👤' },
+            { threshold: 10, level: 'apprentice', title: '見習い', description: '見習いレベル', color: '#FFA500', emblem: '📚' },
+            { threshold: 0, level: 'newbie', title: 'にわか', description: 'まだまだこれから！', color: '#DC143C', emblem: '🌱' }
+        ];
+
+        // ゲーム状態
+        let currentSeries = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let selectedAnswer = null;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function showMenu() {
+            showScreen('menu');
+            resetGame();
+        }
+
+        function resetGame() {
+            currentSeries = '';
+            currentQuestions = [];
+            currentQuestionIndex = 0;
+            answers = [];
+            selectedAnswer = null;
+        }
+
+        function startQuiz(series) {
+            currentSeries = series;
+            
+            if (series === 'random') {
+                // 全シリーズからランダムに選択
+                const allQuestions = [...quizData['ワンピース'], ...quizData['僕のヒーローアカデミア'], ...quizData['HUNTER×HUNTER']];
+                currentQuestions = shuffleArray(allQuestions).slice(0, 9);
+            } else {
+                currentQuestions = shuffleArray([...quizData[series]]);
+            }
+            
+            currentQuestionIndex = 0;
+            answers = [];
+            
+            showScreen('quiz');
+            displayQuestion();
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function displayQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('quiz-title').textContent = `🎯 ${currentSeries}クイズ`;
+            document.getElementById('progress').textContent = `問題 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('question-text').textContent = question.text;
+            
+            const choicesContainer = document.getElementById('choices');
+            choicesContainer.innerHTML = '';
+            
+            question.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice';
+                button.textContent = `${index + 1}. ${choice}`;
+                button.onclick = () => selectAnswer(index);
+                choicesContainer.appendChild(button);
+            });
+            
+            selectedAnswer = null;
+            updateNextButton();
+        }
+
+        function selectAnswer(answerIndex) {
+            selectedAnswer = answerIndex;
+            
+            document.querySelectorAll('.choice').forEach((choice, index) => {
+                choice.classList.toggle('selected', index === answerIndex);
+            });
+            
+            updateNextButton();
+        }
+
+        function updateNextButton() {
+            const nextButton = document.getElementById('next-button');
+            if (selectedAnswer !== null) {
+                nextButton.classList.remove('disabled');
+                nextButton.textContent = currentQuestionIndex < currentQuestions.length - 1 ? '次の問題' : '結果を見る';
+            } else {
+                nextButton.classList.add('disabled');
+            }
+        }
+
+        function nextQuestion() {
+            if (selectedAnswer === null) return;
+            
+            const question = currentQuestions[currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            answers.push({
+                questionId: question.id,
+                selectedAnswer: selectedAnswer,
+                isCorrect: isCorrect
+            });
+            
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const correctCount = answers.filter(a => a.isCorrect).length;
+            const totalCount = answers.length;
+            const accuracy = Math.round((correctCount / totalCount) * 100);
+            
+            // オタク度計算
+            const otakuLevel = calculateOtakuLevel(accuracy);
+            
+            document.getElementById('emblem').textContent = otakuLevel.emblem;
+            document.getElementById('emblem').style.backgroundColor = otakuLevel.color;
+            document.getElementById('level-title').textContent = otakuLevel.title;
+            document.getElementById('level-title').style.color = otakuLevel.color;
+            document.getElementById('level-description').textContent = otakuLevel.description;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            document.getElementById('score').textContent = `${correctCount}/${totalCount}`;
+            
+            showScreen('results');
+        }
+
+        function calculateOtakuLevel(accuracy) {
+            for (let level of otakuLevels) {
+                if (accuracy >= level.threshold) {
+                    return level;
+                }
+            }
+            return otakuLevels[otakuLevels.length - 1];
+        }
+
+        // 初期化
+        showScreen('menu');
+    </script>
+</body>
+</html>

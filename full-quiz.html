@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎌 クイズ・オタク知識の泉 - 完全版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .loading {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .data-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .random-button {
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .difficulty-section {
+            margin: 20px 0;
+        }
+
+        .difficulty-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .difficulty-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-button:hover {
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .difficulty-button.selected {
+            border-color: rgba(255, 215, 0, 0.8);
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .quiz-header {
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            font-size: 1.1em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .question-meta {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .choice {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .choice:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .choice.selected {
+            border: 2px solid rgba(255, 215, 0, 0.8);
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .result {
+            margin-bottom: 30px;
+        }
+
+        .emblem {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin: 0 auto 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+
+            .data-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- データ読み込み画面 -->
+        <div id="loading" class="screen">
+            <h1 class="title">🎌 クイズ・オタク知識の泉</h1>
+            <div class="loading">
+                <h3>📊 データを読み込み中...</h3>
+                <p>768問の本格クイズデータを準備中です</p>
+                <div style="margin-top: 15px;">
+                    <div id="loading-progress">準備中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- メニュー画面 -->
+        <div id="menu" class="screen hidden">
+            <h1 class="title">🎌 クイズ・オタク知識の泉</h1>
+            <p class="subtitle">あなたのオタク度を測定しましょう！</p>
+            
+            <div class="stats">
+                <h3>📊 利用可能なデータ（本格版）</h3>
+                <div class="data-stats" id="data-stats">
+                    <!-- データ統計がここに表示されます -->
+                </div>
+                <p><strong id="total-questions">合計: 0問</strong></p>
+            </div>
+
+            <div class="difficulty-section">
+                <h4>🎯 難易度を選択</h4>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-button selected" data-difficulty="all">
+                        全難易度
+                    </button>
+                    <button class="difficulty-button" data-difficulty="1">
+                        ⭐ 初級
+                    </button>
+                    <button class="difficulty-button" data-difficulty="2">
+                        ⭐⭐ 中級
+                    </button>
+                    <button class="difficulty-button" data-difficulty="3">
+                        ⭐⭐⭐ 上級
+                    </button>
+                    <button class="difficulty-button" data-difficulty="4">
+                        ⭐⭐⭐⭐ 超オタク級
+                    </button>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="button random-button" onclick="startQuiz('random')">
+                    🎲 全シリーズからランダム出題（10問）
+                </button>
+                <button class="button" onclick="startQuiz('ワンピース')">
+                    📺 ワンピース
+                </button>
+                <button class="button" onclick="startQuiz('僕のヒーローアカデミア')">
+                    📺 僕のヒーローアカデミア
+                </button>
+                <button class="button" onclick="startQuiz('HUNTER×HUNTER')">
+                    📺 HUNTER×HUNTER
+                </button>
+            </div>
+        </div>
+
+        <!-- クイズ画面 -->
+        <div id="quiz" class="screen hidden">
+            <div class="quiz-header">
+                <h2 id="quiz-title">🎯 クイズ</h2>
+                <div class="progress" id="progress">問題 1 / 10</div>
+                <div class="question-meta" id="question-meta">難易度: ⭐</div>
+            </div>
+
+            <div class="question">
+                <h3 id="question-text">問題文がここに表示されます</h3>
+            </div>
+
+            <div class="choices" id="choices">
+                <!-- 選択肢がここに動的に追加されます -->
+            </div>
+
+            <div class="button-group">
+                <button class="button disabled" id="next-button" onclick="nextQuestion()">
+                    次の問題
+                </button>
+            </div>
+
+            <button class="back-button" onclick="showMenu()">
+                🏠 ホームに戻る
+            </button>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="results" class="screen hidden">
+            <h2>🎉 クイズ結果</h2>
+            
+            <div class="result">
+                <div class="emblem" id="emblem">🏆</div>
+                <h3 id="level-title">結果</h3>
+                <p id="level-description">説明</p>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span>正解率:</span>
+                    <span id="accuracy">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span>正解数:</span>
+                    <span id="score">0/0</span>
+                </div>
+                <div class="stat-item">
+                    <span>平均難易度:</span>
+                    <span id="avg-difficulty">⭐</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="button" onclick="showMenu()">
+                    🔄 もう一度挑戦
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // グローバル変数
+        let allQuizData = {};
+        let currentSeries = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let selectedAnswer = null;
+        let selectedDifficulty = 'all';
+
+        // オタク度判定データ
+        const otakuLevels = [
+            { threshold: 95, level: 'god', title: '神', description: '完璧すぎる...もはや人間を超越している。アニメ・漫画界の神として崇められるべき存在です。', color: '#FFD700', emblem: '👑' },
+            { threshold: 90, level: 'legend', title: '生ける伝説', description: 'アニメ・漫画界の生き字引。その知識の深さに周囲は畏敬の念を抱きます。', color: '#FF6B35', emblem: '⚡' },
+            { threshold: 80, level: 'veteran', title: '古参兵', description: '長年培った知識が光る、立派な古参オタク。新参者の憧れの存在です。', color: '#8A2BE2', emblem: '🛡️' },
+            { threshold: 70, level: 'otaku-egg', title: 'オタクの卵', description: 'オタクの片鱗を見せています。さらなる成長に期待が高まります！', color: '#4169E1', emblem: '🥚' },
+            { threshold: 60, level: 'general', title: '一般人', description: '一般的な知識レベル。アニメ・漫画に興味はあるようですね。まだまだ伸びしろがあります！', color: '#32CD32', emblem: '👤' },
+            { threshold: 40, level: 'apprentice', title: '見習い', description: '見習いレベル。これから頑張りましょう！基礎から学び直すことをお勧めします。', color: '#FFA500', emblem: '📚' },
+            { threshold: 0, level: 'newbie', title: 'にわか', description: 'まだまだこれから！もっとアニメ・漫画の世界に触れて知識を深めましょう。', color: '#DC143C', emblem: '🌱' }
+        ];
+
+        // CSV解析関数
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim());
+            const questions = [];
+            
+            // ヘッダー行をスキップして開始
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const columns = line.split(',');
+                if (columns.length >= 12) {
+                    questions.push({
+                        id: columns[3],
+                        category: columns[0],
+                        series: columns[1],
+                        subcategory: columns[2],
+                        text: columns[4],
+                        choices: [columns[5], columns[6], columns[7], columns[8]],
+                        correct: parseInt(columns[9]) - 1, // CSV is 1-indexed, convert to 0-indexed
+                        explanation: columns[10],
+                        difficulty: parseInt(columns[11])
+                    });
+                }
+            }
+            
+            return questions;
+        }
+
+        // データ読み込み
+        async function loadAllData() {
+            const files = [
+                { name: 'ワンピース', path: 'specifications/data/quiz/ワンピース.csv' },
+                { name: '僕のヒーローアカデミア', path: 'specifications/data/quiz/僕のヒーローアカデミア.csv' },
+                { name: 'HUNTER×HUNTER', path: 'specifications/data/quiz/HUNTER×HUNTER.csv' }
+            ];
+
+            document.getElementById('loading-progress').textContent = 'CSVファイルを読み込み中...';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                try {
+                    document.getElementById('loading-progress').textContent = `${file.name}を読み込み中... (${i + 1}/${files.length})`;
+                    
+                    const response = await fetch(file.path);
+                    const csvText = await response.text();
+                    const questions = parseCSV(csvText);
+                    
+                    allQuizData[file.name] = questions;
+                    console.log(`Loaded ${questions.length} questions from ${file.name}`);
+                } catch (error) {
+                    console.error(`Failed to load ${file.name}:`, error);
+                    allQuizData[file.name] = [];
+                }
+            }
+
+            document.getElementById('loading-progress').textContent = 'データ処理完了！';
+            setTimeout(() => {
+                showMenu();
+                displayDataStats();
+            }, 500);
+        }
+
+        // データ統計表示
+        function displayDataStats() {
+            const statsContainer = document.getElementById('data-stats');
+            let totalQuestions = 0;
+
+            statsContainer.innerHTML = '';
+
+            Object.keys(allQuizData).forEach(series => {
+                const count = allQuizData[series].length;
+                totalQuestions += count;
+
+                const statCard = document.createElement('div');
+                statCard.className = 'stat-card';
+                statCard.innerHTML = `
+                    <div>📺 ${series}</div>
+                    <div class="stat-number">${count}</div>
+                    <div>問</div>
+                `;
+                statsContainer.appendChild(statCard);
+            });
+
+            document.getElementById('total-questions').textContent = `合計: ${totalQuestions}問`;
+        }
+
+        // 画面表示制御
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function showMenu() {
+            showScreen('menu');
+            resetGame();
+        }
+
+        function resetGame() {
+            currentSeries = '';
+            currentQuestions = [];
+            currentQuestionIndex = 0;
+            answers = [];
+            selectedAnswer = null;
+        }
+
+        // 難易度選択
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('difficulty-button')) {
+                document.querySelectorAll('.difficulty-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                e.target.classList.add('selected');
+                selectedDifficulty = e.target.dataset.difficulty;
+            }
+        });
+
+        // クイズ開始
+        function startQuiz(series) {
+            currentSeries = series;
+            
+            let availableQuestions = [];
+            
+            if (series === 'random') {
+                // 全シリーズから取得
+                Object.values(allQuizData).forEach(questions => {
+                    availableQuestions.push(...questions);
+                });
+            } else {
+                availableQuestions = [...allQuizData[series]];
+            }
+
+            // 難易度フィルタ
+            if (selectedDifficulty !== 'all') {
+                const targetDifficulty = parseInt(selectedDifficulty);
+                availableQuestions = availableQuestions.filter(q => q.difficulty === targetDifficulty);
+            }
+
+            if (availableQuestions.length === 0) {
+                alert('選択した条件に該当する問題が見つかりません。');
+                return;
+            }
+
+            // ランダムに10問選択
+            currentQuestions = shuffleArray(availableQuestions).slice(0, 10);
+            currentQuestionIndex = 0;
+            answers = [];
+            
+            showScreen('quiz');
+            displayQuestion();
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function displayQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const difficultyStars = '⭐'.repeat(question.difficulty);
+            
+            document.getElementById('quiz-title').textContent = `🎯 ${currentSeries}クイズ`;
+            document.getElementById('progress').textContent = `問題 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('question-meta').textContent = `${question.series} - ${question.subcategory} - 難易度: ${difficultyStars}`;
+            document.getElementById('question-text').textContent = question.text;
+            
+            const choicesContainer = document.getElementById('choices');
+            choicesContainer.innerHTML = '';
+            
+            question.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice';
+                button.textContent = `${index + 1}. ${choice}`;
+                button.onclick = () => selectAnswer(index);
+                choicesContainer.appendChild(button);
+            });
+            
+            selectedAnswer = null;
+            updateNextButton();
+        }
+
+        function selectAnswer(answerIndex) {
+            selectedAnswer = answerIndex;
+            
+            document.querySelectorAll('.choice').forEach((choice, index) => {
+                choice.classList.toggle('selected', index === answerIndex);
+            });
+            
+            updateNextButton();
+        }
+
+        function updateNextButton() {
+            const nextButton = document.getElementById('next-button');
+            if (selectedAnswer !== null) {
+                nextButton.classList.remove('disabled');
+                nextButton.textContent = currentQuestionIndex < currentQuestions.length - 1 ? '次の問題' : '結果を見る';
+            } else {
+                nextButton.classList.add('disabled');
+            }
+        }
+
+        function nextQuestion() {
+            if (selectedAnswer === null) return;
+            
+            const question = currentQuestions[currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            answers.push({
+                questionId: question.id,
+                selectedAnswer: selectedAnswer,
+                isCorrect: isCorrect,
+                difficulty: question.difficulty
+            });
+            
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const correctCount = answers.filter(a => a.isCorrect).length;
+            const totalCount = answers.length;
+            const accuracy = Math.round((correctCount / totalCount) * 100);
+            
+            // 平均難易度計算
+            const avgDifficulty = answers.reduce((sum, a) => sum + a.difficulty, 0) / answers.length;
+            const avgDifficultyStars = '⭐'.repeat(Math.round(avgDifficulty));
+            
+            // オタク度計算（難易度も考慮）
+            const otakuLevel = calculateOtakuLevel(accuracy, avgDifficulty);
+            
+            document.getElementById('emblem').textContent = otakuLevel.emblem;
+            document.getElementById('emblem').style.backgroundColor = otakuLevel.color;
+            document.getElementById('level-title').textContent = otakuLevel.title;
+            document.getElementById('level-title').style.color = otakuLevel.color;
+            document.getElementById('level-description').textContent = otakuLevel.description;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            document.getElementById('score').textContent = `${correctCount}/${totalCount}`;
+            document.getElementById('avg-difficulty').textContent = avgDifficultyStars;
+            
+            showScreen('results');
+        }
+
+        function calculateOtakuLevel(accuracy, avgDifficulty) {
+            // 難易度ボーナスを加算
+            const bonusScore = accuracy + (avgDifficulty * 5);
+            
+            for (let level of otakuLevels) {
+                if (bonusScore >= level.threshold) {
+                    return level;
+                }
+            }
+            return otakuLevels[otakuLevels.length - 1];
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            showScreen('loading');
+            loadAllData();
+        });
+    </script>
+</body>
+</html>

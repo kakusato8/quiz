@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クイズデータインポート</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .button {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🎯 クイズデータインポート</h1>
+    
+    <div>
+        <button id="importBtn" class="button">📥 新しいクイズをインポート</button>
+        <button id="clearBtn" class="button">🗑️ 全データクリア</button>
+    </div>
+    
+    <div id="log" class="log"></div>
+
+    <script type="module">
+        import { CSVImporter } from './src/utils/csvImporter.js';
+        
+        const importBtn = document.getElementById('importBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const logDiv = document.getElementById('log');
+        
+        function log(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.textContent = `[${time}] ${message}`;
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        importBtn.addEventListener('click', async () => {
+            importBtn.disabled = true;
+            clearBtn.disabled = true;
+            
+            try {
+                log('🚀 新しいクイズデータのインポートを開始します...', 'info');
+                
+                const importer = new CSVImporter();
+                await importer.importAllCSVFiles();
+                
+                log('✅ すべてのクイズデータのインポートが完了しました！', 'success');
+            } catch (error) {
+                log(`❌ インポート中にエラーが発生しました: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                importBtn.disabled = false;
+                clearBtn.disabled = false;
+            }
+        });
+        
+        clearBtn.addEventListener('click', async () => {
+            if (!confirm('全てのクイズデータを削除しますか？この操作は元に戻せません。')) {
+                return;
+            }
+            
+            importBtn.disabled = true;
+            clearBtn.disabled = true;
+            
+            try {
+                log('🗑️ 全データのクリアを開始します...', 'info');
+                
+                const importer = new CSVImporter();
+                await importer.clearAllQuestions();
+                
+                log('✅ 全データのクリアが完了しました！', 'success');
+            } catch (error) {
+                log(`❌ クリア中にエラーが発生しました: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                importBtn.disabled = false;
+                clearBtn.disabled = false;
+            }
+        });
+        
+        log('📋 クイズデータインポートツールが準備完了しました', 'info');
+    </script>
+</body>
+</html>
